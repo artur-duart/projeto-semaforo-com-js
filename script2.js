@@ -1,46 +1,42 @@
 "use strict"
 
 const getId = (elemento) => document.getElementById(elemento)
-let semaforo = getId("img")
-let idVermelho
-let idAmarelo
-let idVerde
+const semaforo = getId("img")
+let idInterval
 
-const sinalVermelho = () => {
-    semaforo.src = "img/vermelho.png"
-}
+const ligarVerde = () => semaforo.src = "img/verde.png"
+const ligarAmarelo = () => semaforo.src = "img/amarelo.png"
+const ligarVermelho = () => semaforo.src = "img/vermelho.png"
+const desligarSemaforo = () => semaforo.src = "img/desligado.png"
 
-const sinalAmarelo = () => {
-    semaforo.src = "img/amarelo.png"
-}
+const semaforoVerde = () => semaforo.src.includes("verde")
+const semaforoAmarelo = () => semaforo.src.includes("amarelo")
+const semaforoVermelho = () => semaforo.src.includes("vermelho")
 
-const sinalVerde = () => {
-    semaforo.src = "img/verde.png"
-}
-
-const sairAutomatico = () => {
-    clearInterval(idVermelho)
-    clearInterval(idAmarelo)
-    clearInterval(idVerde)
-}
-
-const mudancaAutomatica = () => {
-    const botaoAutomatico = getId("automatic")
-
-    if (botaoAutomatico.textContent = "Automático") {
-        idVermelho = setInterval(sinalVermelho, 500)
-        idAmarelo = setInterval(sinalAmarelo, 1000)
-        idVerde = setInterval(sinalVerde, 1500)
-        botaoAutomatico.textContent = "Parar"
+const automatico = () => {
+    if (semaforoVerde()) {
+        ligarAmarelo()
+    } else if (semaforoAmarelo()) {
+        ligarVermelho()
     } else {
-        sairAutomatico()
-        botaoAutomatico.textContent = "Automático"
+        ligarVerde()
     }
-
 }
 
-// Eventos
-getId("red").addEventListener("click", sinalVermelho)
-getId("yellow").addEventListener("click", sinalAmarelo)
-getId("green").addEventListener("click", sinalVerde)
-getId("automatic").addEventListener("click", mudancaAutomatica)
+const funcionar = () => {
+    const buttonAutomatico = getId("automatic")
+    if (buttonAutomatico.textContent == "Automático") {
+        buttonAutomatico.textContent = "Parar"
+        idInterval = setInterval(automatico, 1000)
+    } else {
+        clearInterval(idInterval)
+        buttonAutomatico.textContent = "Automático"
+    }
+}
+
+//Eventos
+getId("green").addEventListener("click", ligarVerde)
+getId("yellow").addEventListener("click", ligarAmarelo)
+getId("red").addEventListener("click", ligarVermelho)
+getId("img").addEventListener("dblclick", desligarSemaforo)
+getId("automatic").addEventListener("click", funcionar)
